@@ -1,8 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <time.h>
 
-//definição da estrutura de árvore de diretório
+//definiÃ§Ã£o da estrutura de Ã¡rvore de diretÃ³rio
 typedef struct arvdir{
     struct arvdir *pai, *filho, *irmao;
     char *nome;
@@ -11,7 +10,7 @@ typedef struct arvdir{
 
 }TAD;
 
-//definição dos métodos básicos de árvores
+//definiÃ§Ã£o dos mÃ©todos bÃ¡sicos de Ã¡rvores
 TAD * cria (char *c){
     TAD *a = (TAD*) malloc (sizeof(TAD));
     a->pai = NULL;
@@ -21,7 +20,7 @@ TAD * cria (char *c){
     return a;
 };
 
-//inserção de subarvore "filho" em uma arvore "pai"
+//inserÃ§Ã£o de subarvore "filho" em uma arvore "pai"
 void inserir (TAD *afilho, TAD *apai){
     afilho->irmao = apai->filho;
     afilho->pai = apai;
@@ -39,7 +38,7 @@ void liberar (TAD *a){
     free(a);
 }
 
-//remove um nó e seus filhos
+//remove um nÃ³ e seus filhos
 void remover (TAD *a){
     TAD *i;
     i = a->pai->filho;
