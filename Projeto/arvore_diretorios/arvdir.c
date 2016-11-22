@@ -65,11 +65,11 @@ void remover (TAD *a){
 }
 //busca e retorna o nó com o nome procurando-o na subárvore a
 TAD* busca (TAD* a, char *c){
-    TAD* p;
     if (!strcmp(c, a->info->nome)) return a;
-    else {
-        for (p=a->filho; p; p=p->irmao)
-            if (busca(p,c)) return p;
+    TAD *r, *p;
+    for(p=a->filho;p;p=p->irmao){
+        r = busca(p,c);
+        if(r) return r;
     }
     return NULL;
 }
