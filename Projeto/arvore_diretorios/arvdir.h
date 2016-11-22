@@ -1,8 +1,9 @@
+#ifndef ARVDIR_H_INCLUDED
+#define ARVDIR_H_INCLUDED
+
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 #include "diretorio.h"
-
 //definição da estrutura de árvore de diretório
 typedef struct arvdir{
     struct arvdir *pai, *filho, *irmao;
@@ -64,12 +65,13 @@ void remover (TAD *a){
     liberar(a);
 }
 //busca e retorna o nó com o nome procurando-o na subárvore a
-TAD* busca (TAD* a, char *c){
+TAD* busca (TAD* a, char* c){
     TAD* p;
-    if (!strcmp(c, a->info->nome)) return a;
+    if (a->info->nome==c) return p;
     else {
-        for (p=a->filho; p; p=p->irmao)
-            if (busca(p,c)) return p;
+        for (p=a->filho; p; p=p->irmao) {
+        if (busca(p,c)) return p;
+        }
     }
     return NULL;
 }
@@ -79,3 +81,7 @@ void imprime (TAD *a){
     printf("%s\n",a->info->nome);
     for (p=a->filho; p; p=p->irmao) imprime(p);
 }
+
+
+
+#endif // ARVDIR_H_INCLUDED
