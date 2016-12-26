@@ -2,15 +2,16 @@
 #include <stdio.h>
 #include <string.h>
 #include "diretorio.h"
+#include "arquivo.c"
 
-//definição da estrutura de árvore de diretório
+//definiÃ§Ã£o da estrutura de Ã¡rvore de diretÃ³rio
 typedef struct arvdir{
     struct arvdir *pai, *filho, *irmao;
     int arquivo;
-    struct diretorio *info;
+    void *info;
 }TAD;
 
-//definição dos métodos básicos de árvores
+//definiÃ§Ã£o dos mÃ©todos bÃ¡sicos de Ã¡rvores
 TAD * cria (char *c){
     TAD *a = (TAD*) malloc (sizeof(TAD));
     a->pai = NULL;
@@ -20,11 +21,23 @@ TAD * cria (char *c){
     return a;
 };
 
-//inserção de subarvore "filho" em uma arvore "pai"
+//inserÃ§Ã£o de subarvore "filho" em uma arvore "pai"
 void inserir (TAD *afilho, TAD *apai){
+    if(apai->arquivo){
+        printf("InserÃ§Ãµes apenas em diretÃ³rios\n");
+        return;
+    }
     afilho->irmao = apai->filho;
     afilho->pai = apai;
     apai->filho = afilho;
+    if(!afilho->arquivo){
+        TDir *aux = (TDir*)apai->info;
+        aux->num_dir++;
+    }
+    else{
+        TDir *aux = (TDir*)apai->info;
+        aux->num_arq++;
+    }
 }
 
 //liberar arvore
@@ -35,10 +48,16 @@ void liberar (TAD *a){
         liberar(p);
         p = t;
     }
+    free(a->info);
     free(a);
 }
 
-//mover nó a para ser filho de nó b
+void destruir(TAD *a){
+    if(!a->pai) return;
+    liberar(a);
+}
+
+//mover nÃ³ a para ser filho de nÃ³ b
 void mover(TAD *a, TAD*b){
     if(a == a->pai->filho){
         a->pai->filho = a->irmao;
@@ -52,7 +71,7 @@ void mover(TAD *a, TAD*b){
     b->filho = a;
 }
 
-//remove um nó e seus filhos
+//remove um nÃ³ e seus filhos
 void remover (TAD *a){
     TAD *i;
     i = a->pai->filho;
@@ -61,21 +80,45 @@ void remover (TAD *a){
         while (i->irmao != a) i = i->irmao;
         i->irmao = a->irmao;
     }
+    TAD *pai = a->pai;
+    if(!pai->arquivo){
+        TDir *aux = (TDir*)pai->info;
+        aux->num_dir--;
+    }
+    else{
+        TDir *aux = (TDir*)pai->info;
+        aux->num_arq--;
+    }
     liberar(a);
 }
-//busca e retorna o nó com o nome procurando-o na subárvore a
+//busca e retorna o nÃ³ com o nome procurando-o na subÃ¡rvore a
 TAD* busca (TAD* a, char *c){
-    if (!strcmp(c, a->info->nome)) return a;
-    TAD *r, *p;
-    for(p=a->filho;p;p=p->irmao){
-        r = busca(p,c);
-        if(r) return r;
+    if(a->arquivo){
+        TArq *aux;
+        aux = (TArq*) a->info;
+        if (!strcmp(c, aux->nome)) return a;
+        TAD *r, *p;
+        for(p=a->filho;p;p=p->irmao){
+            r = busca(p,c);
+            if(r) return r;
+        }
     }
+    else{
+        TDir *aux;
+        aux = (TDir*) a->info;
+        if (!strcmp(c, aux->nome)) return a;
+        TAD *r, *p;
+        for(p=a->filho;p;p=p->irmao){
+            r = busca(p,c);
+            if(r) return r;
+            }
+        }
     return NULL;
 }
 
 void imprime (TAD *a){
     TAD* p;
-    printf("%s\n",a->info->nome);
+    TDir *aux = (TDir*)a->info;
+    printf("%s\n",aux->nome);
     for (p=a->filho; p; p=p->irmao) imprime(p);
 }
