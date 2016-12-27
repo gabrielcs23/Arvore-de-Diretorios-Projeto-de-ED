@@ -97,6 +97,7 @@ void mv(TAD* a, char* command_line)
 
 // mkdir
 void mkdir(TAD *a, char* command_line)
+//seria interessante pensar em colocar argumentos para criar o diretório com permissões escolhidas pelo usuário
 {
 	char address[MAX_NAME_SIZE];
 	int i = 2, j = 0;
