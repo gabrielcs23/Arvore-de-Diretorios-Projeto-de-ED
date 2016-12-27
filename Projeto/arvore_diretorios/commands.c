@@ -110,6 +110,11 @@ void mkdir(TAD *a, char* command_line)
 			if (j > 0) // se 'address' não for vazia
 			{
 				address[j] = '\0';
+				TAD *mesmo_nome = busca_filhos(a, adress);
+				if(mesmo_nome){
+					printf("Diretorio ja existente\n");
+					return;
+				}
 				TAD *ins = cria(address,0,0,'n');
 				inserir(ins,a);
 			}
@@ -135,6 +140,11 @@ void touch (TAD *a, char* command_line)
 			if (j > 0) // se 'address' não for vazia
 			{
 				address[j] = '\0';
+				TAD *mesmo_nome = busca_filhos(a, adress);
+				if(mesmo_nome){
+					printf("Diretorio ja existente\n");
+					return;
+				}
 				TAD *ins = cria(address,1,0,'T');
 				inserir(ins,a);
 			}
