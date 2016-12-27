@@ -121,7 +121,30 @@ void mkdir(TAD *a, char* command_line)
 	}
 }
 
-// new file (touch?)
+void touch (TAD *a, char* command_line)
+//mesma coisa do mkdir, pensar em argumentos para tipo e permissão
+{
+	char address[MAX_NAME_SIZE];
+	int i = 2, j = 0;
+	while ((command_line[i] != '\n') || (command_line[i] != '\0'))
+	{
+		i++;
+		if (command_line[i] == '\0')
+		{
+			if (j > 0) // se 'address' não for vazia
+			{
+				address[j] = '\0';
+				TAD *ins = cria(address,1,0,'T');
+				inserir(ins,a);
+			}
+		}
+		else
+		{
+			address[j] = command_line[i];
+			j++;
+		}
+	}
+}
 
 // info, etc
 
