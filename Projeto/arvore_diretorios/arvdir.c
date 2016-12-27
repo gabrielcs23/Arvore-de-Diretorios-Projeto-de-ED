@@ -12,19 +12,28 @@ typedef struct arvdir{
 }TAD;
 
 //definição dos métodos básicos de árvores
-TAD * cria (char *c){
+TAD *cria (char *c, int arq, int perm, char tipo){
     TAD *a = (TAD*) malloc (sizeof(TAD));
+    if(arq){
+        TArq *x = cria_arq(c, tipo, perm);
+        a->info = (void*) x;
+    }
+    else{
+        TDir *x = criar_dir(c);
+        a->info = (void*) x;
+    }
     a->pai = NULL;
     a->filho = NULL;
     a->irmao = NULL;
     a->info = criar_dir(c);
+    a->arquivo = arq;
     return a;
 };
 
 //inserção de subarvore "filho" em uma arvore "pai"
 void inserir (TAD *afilho, TAD *apai){
     if(apai->arquivo){
-        printf("Inserções apenas em diretórios\n");
+        printf("Insercoes apenas em diretorios\n");
         return;
     }
     afilho->irmao = apai->filho;
@@ -52,11 +61,6 @@ void liberar (TAD *a){
     free(a);
 }
 
-void destruir(TAD *a){
-    if(!a->pai) return;
-    liberar(a);
-}
-
 //mover nó a para ser filho de nó b
 void mover(TAD *a, TAD*b){
     if(a == a->pai->filho){
@@ -72,7 +76,10 @@ void mover(TAD *a, TAD*b){
 }
 
 //remove um nó e seus filhos
-void remover (TAD *a){
+void destruir (TAD *a){
+    if(!a->pai){
+        destruir(a->filho);
+    }
     TAD *i;
     i = a->pai->filho;
     if(i == a) a->pai->filho = a->irmao;
