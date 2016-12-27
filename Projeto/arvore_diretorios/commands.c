@@ -28,7 +28,7 @@ void ls(TAD* cur_dir)
             printf(aux->nome);
             tamNome = strlen(aux->nome);
 		}
-		// espaços pra deixar mais bonitinho:
+		// espaÃ§os pra deixar mais bonitinho:
 		int i;
 		for (i = tamNome; i < MAX_NAME_SIZE; i++)
 		{
@@ -47,7 +47,7 @@ TAD* cd(TAD* cur_dir, char* command_line)	// bugres: "cd //////////filho1/filho1
 	char address[MAX_NAME_SIZE];
 	int i = 2, j = 0;
 
-	// cd .. para ir um nível acima
+	// cd .. para ir um nÃ­vel acima
 	if ((command_line[2] == ' ') && (command_line[3] == '.') && (command_line[4] == '.'))
 	{
 		if(cur_dir->pai)
@@ -60,14 +60,14 @@ TAD* cd(TAD* cur_dir, char* command_line)	// bugres: "cd //////////filho1/filho1
 		i++;
 		if (command_line[i] == SEPARADOR || command_line[i] == '\0')
 		{
-			if (j > 0) // se 'address' não for vazia
+			if (j > 0) // se 'address' nÃ£o for vazia
 			{
 				address[j] = '\0';
 
 				TAD* new_dir = busca_filhos(cur_dir, address);
-				if (new_dir) // se encontrar o endereço, continua até o final do comando
+				if (new_dir) // se encontrar o endereÃ§o, continua atÃ© o final do comando
 					cur_dir = new_dir;
-				else // se não encontrar o endereço, cancela o comando
+				else // se nÃ£o encontrar o endereÃ§o, cancela o comando
 					return original_dir;
 
 				j = 0;
@@ -96,6 +96,29 @@ void mv(TAD* a, char* command_line)
 // rm
 
 // mkdir
+void mkdir(TAD *a, char* command_line)
+{
+	char address[MAX_NAME_SIZE];
+	int i = 2, j = 0;
+	while ((command_line[i] != '\n') || (command_line[i] != '\0'))
+	{
+		i++;
+		if (command_line[i] == '\0')
+		{
+			if (j > 0) // se 'address' nÃ£o for vazia
+			{
+				address[j] = '\0';
+				TAD *ins = cria(address,0,0,'n');
+				inserir(ins,a);
+			}
+		}
+		else
+		{
+			address[j] = command_line[i];
+			j++;
+		}
+	}
+}
 
 // new file (touch?)
 
@@ -107,14 +130,14 @@ void print_info(TAD* a)
 	if(a->arquivo){
         TArq *aux = (TArq*)a->info;
         printf("Criado em: %s    Modificado em: %s\n", aux->dat_criacao, aux->dat_atualiza);
-        for (i = 0; i < MAX_NAME_SIZE; i++)	printf(" "); 	// espaços pra deixar mais bonitinho?
+        for (i = 0; i < MAX_NAME_SIZE; i++)	printf(" "); 	// espaÃ§os pra deixar mais bonitinho?
         printf("Permissoes: %d", aux->permissoes);
         printf("\n");
 	}
 	else{
         TDir *aux = (TDir*)a->info;
         printf("Criado em: %s    Modificado em: %s\n", aux->dat_criacao, aux->dat_atualiza);
-        for (i = 0; i < MAX_NAME_SIZE; i++)	printf(" "); 	// espaços pra deixar mais bonitinho?
+        for (i = 0; i < MAX_NAME_SIZE; i++)	printf(" "); 	// espaÃ§os pra deixar mais bonitinho?
         printf("Permissoes: %d", aux->permissoes);
         printf("    Num. de Arquivos: %d    Num. de Pastas: %d\n", aux->num_arq, aux->num_dir);
 	}
