@@ -98,6 +98,7 @@ void mv(TAD* a, char* command_line)
 // mkdir
 void mkdir(TAD *a, char* command_line)
 //seria interessante pensar em colocar argumentos para criar o diretório com permissões escolhidas pelo usuário
+//se o split funcionasse corretamente com delimitadores passados para a função, isso seria trivial
 {
 	char address[MAX_NAME_SIZE];
 	int i = 2, j = 0;
