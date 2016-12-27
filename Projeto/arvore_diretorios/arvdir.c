@@ -4,14 +4,14 @@
 #include "diretorio.h"
 #include "arquivo.c"
 
-//definiÃ§Ã£o da estrutura de Ã¡rvore de diretÃ³rio
+//definição da estrutura de árvore de diretório
 typedef struct arvdir{
     struct arvdir *pai, *filho, *irmao;
     int arquivo;
     void *info;
 }TAD;
 
-//definiÃ§Ã£o dos mÃ©todos bÃ¡sicos de Ã¡rvores
+//definição dos métodos básicos de árvores
 TAD *cria (char *c, int arq, int perm, char tipo){
     TAD *a = (TAD*) malloc (sizeof(TAD));
     if(arq){
@@ -25,32 +25,11 @@ TAD *cria (char *c, int arq, int perm, char tipo){
     a->pai = NULL;
     a->filho = NULL;
     a->irmao = NULL;
-    a->info = criar_dir(c);
     a->arquivo = arq;
     return a;
 };
 
-void transformar(TAD *a){
-    if(a->arquivo){
-        TArq *x = (TArq*) a->info;
-        TDir *novo = criar_dir(x->nome);
-        novo->dat_criacao = x->dat_criacao;
-        free(a->info);
-        a->info = (void*) novo;
-    }
-    else{
-        TDir *x = (TDir*) a->info;
-        int per;
-        char tip;
-        scanf("%d%c",&per,&tip);
-        TArq *novo = cria_arq(x->nome,tip,per);
-        novo->dat_criacao = x->dat_criacao;
-        free(a->info);
-        a->info = (void*) novo;
-    }
-}
-
-//inserÃ§Ã£o de subarvore "filho" em uma arvore "pai"
+//inserção de subarvore "filho" em uma arvore "pai"
 void inserir (TAD *afilho, TAD *apai){
     if(apai->arquivo){
         printf("Insercoes apenas em diretorios\n");
@@ -69,7 +48,7 @@ void inserir (TAD *afilho, TAD *apai){
     }
 }
 
-//liberar arvore
+//liberar arvore da memoria
 void liberar (TAD *a){
     TAD *p = a->filho;
     while(p){
@@ -81,7 +60,7 @@ void liberar (TAD *a){
     free(a);
 }
 
-//mover nÃ³ a para ser filho de nÃ³ b
+//mover nó a para ser filho de nó b
 void mover(TAD *a, TAD*b){
     if(a == a->pai->filho){
         a->pai->filho = a->irmao;
@@ -95,8 +74,9 @@ void mover(TAD *a, TAD*b){
     b->filho = a;
 }
 
-//remove um nÃ³ e seus filhos
+//remove um nó e seus filhos
 void destruir (TAD *a){
+    // probido destruir a raiz; destroi tudo abaixo dela
     if(!a->pai){
         destruir(a->filho);
     }
@@ -107,18 +87,17 @@ void destruir (TAD *a){
         while (i->irmao != a) i = i->irmao;
         i->irmao = a->irmao;
     }
-    TAD *pai = a->pai;
-    if(!pai->arquivo){
-        TDir *aux = (TDir*)pai->info;
+    //acerta a quant de itens dentro do diretorio pai
+    TDir *aux = (TDir*)a->pai->info;
+    if(!a->arquivo){
         aux->num_dir--;
     }
     else{
-        TDir *aux = (TDir*)pai->info;
         aux->num_arq--;
     }
     liberar(a);
 }
-//busca e retorna o nÃ³ com o nome procurando-o na subÃ¡rvore a
+//busca e retorna o nó com o nome procurando-o na subárvore a
 TAD* busca (TAD* a, char *c){
     if(a->arquivo){
         TArq *aux;
@@ -149,3 +128,15 @@ void imprime (TAD *a){
     printf("%s\n",aux->nome);
     for (p=a->filho; p; p=p->irmao) imprime(p);
 }
+
+char * getNome(TAD *a){
+    if(a->arquivo){
+        TArq *aux = (TArq*)a->info;
+        return aux->nome;
+    }
+    else{
+        TDir *aux = (TDir*)a->info;
+        return aux->nome;
+    }
+}
+
