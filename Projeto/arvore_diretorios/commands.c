@@ -92,7 +92,7 @@ void mv(TAD* a, char* command_line)
 }
 
 // rename
-void rename(TAD *a, char* command_line)
+void renameM(TAD *a, char* command_line)
 {
 	char address[MAX_NAME_SIZE];
 	int i = 2, j = 0;
@@ -113,7 +113,7 @@ void rename(TAD *a, char* command_line)
 				if(mesmo_nome)
 				{
 					//podemos sobrescrever neste caso
-					//ou até mesmo colocar um scanf e perguntar se o usuario quer sobrescrever 
+					//ou até mesmo colocar um scanf e perguntar se o usuario quer sobrescrever
 					//ou deixar de fazer a operação
 					printf("Diretorio ou arquivo ja existente");
 					return;
@@ -128,7 +128,7 @@ void rename(TAD *a, char* command_line)
 					TDir *mod = (TDir*) a->info;
 					mod->nome = address;
 				}
-				
+
 			}
 		}
 		else
@@ -140,6 +140,34 @@ void rename(TAD *a, char* command_line)
 }
 
 // rm
+void rm(TAD *a, char* command_line){
+    char address[MAX_NAME_SIZE];
+    int i = 2, j = 0;
+    while((command_line[i] != '\n') || (command_line[i] != '\0')){
+        i++;
+        if(command_line[i] != '\0'){
+            address[j] = command_line[i];
+            j++;
+        }
+        else{
+            if(j>0){ // se 'address' não for vazia
+                address[j] = '\0';
+                TAD *alvo = busca_filhos(a,address);
+                if(alvo){
+                    destruir(alvo);
+                    return;
+                }
+                else{
+                    printf("Arquivo/Diretorio não encontrado\n");
+                    return;
+                }
+            }
+            else{
+                printf("Querido\n");
+            }
+        }
+    }
+}
 
 // mkdir
 void mkdir(TAD *a, char* command_line)
@@ -156,7 +184,7 @@ void mkdir(TAD *a, char* command_line)
 			if (j > 0) // se 'address' não for vazia
 			{
 				address[j] = '\0';
-				TAD *mesmo_nome = busca_filhos(a, adress);
+				TAD *mesmo_nome = busca_filhos(a, address);
 				if(mesmo_nome){
 					printf("Diretorio ja existente\n");
 					return;
@@ -186,7 +214,7 @@ void touch (TAD *a, char* command_line)
 			if (j > 0) // se 'address' não for vazia
 			{
 				address[j] = '\0';
-				TAD *mesmo_nome = busca_filhos(a, adress);
+				TAD *mesmo_nome = busca_filhos(a, address);
 				if(mesmo_nome){
 					printf("Diretorio ja existente\n");
 					return;
