@@ -92,6 +92,52 @@ void mv(TAD* a, char* command_line)
 }
 
 // rename
+void rename(TAD *a, char* command_line)
+{
+	char address[MAX_NAME_SIZE];
+	int i = 2, j = 0;
+	while ((command_line[i] != '\n') || (command_line[i] != '\0'))
+	{
+		i++;
+		if (command_line[i] == '\0')
+		{
+			if (j > 0) // se 'address' não for vazia
+			{
+				address[j] = '\0';
+				if(!a->pai)
+				{
+					TDir *mod = (TDir*) a->info;
+					mod->nome = address;
+				}
+				TAD *mesmo_nome = busca_filhos(a->pai,address);
+				if(mesmo_nome)
+				{
+					//podemos sobrescrever neste caso
+					//ou até mesmo colocar um scanf e perguntar se o usuario quer sobrescrever 
+					//ou deixar de fazer a operação
+					printf("Diretorio ou arquivo ja existente");
+					return;
+				}
+				if(a->arquivo)
+				{
+					TArq *mod = (TArq*) a->info;
+					mod->nome = address;
+				}
+				else
+				{
+					TDir *mod = (TDir*) a->info;
+					mod->nome = address;
+				}
+				
+			}
+		}
+		else
+		{
+			address[j] = command_line[i];
+			j++;
+		}
+	}
+}
 
 // rm
 
