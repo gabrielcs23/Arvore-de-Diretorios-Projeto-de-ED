@@ -237,47 +237,21 @@ TAD* busca_filhos (TAD* a, char* c)
 	return NULL;
 }
 
-char **split(char *command_line, int tam_max){
-    //retorn nulo se numero de argumentos for maior que tam_max
-    //ou se for menor
-    //precisa dar free nos retornos
-    char **resp = (char**)malloc(sizeof(char*)*(tam_max));
-    int i,j,p;
-    int len = strlen(command_line);
-    for(i=0;i<tam_max;i++){
-        int corte = 0;
-        p = 0;
-        resp[i] = (char*)malloc(sizeof(char)*BUFFER_SIZE);
-        while(j<len){
-            if(command_line[j]=='\''){
-                corte = (corte+1)%2;
-            }
-            else if(command_line[j]!=' ' || corte){
-                resp[i][p] = command_line[j];
-                p++;
-            }
-
-            else{
-                resp[i] = realloc(resp[i],p);
-                resp[i][p] = '\0';
-                j++;
-                break;
-            }
-            j++;
-        }
-        if(j==len && i<tam_max){
-            printf("ERRO\n");
-            free(resp);
-            return NULL;
-        }
-        //resp[i] = elem;
+void split(char *command_line,char *resp[],int tam_max){
+    int i=0,j;
+    char *temp;
+    char aux[strlen(command_line)];
+    /*for(i=0;command_line[i]!='\0';i++){
+        if(command_line[i]=='\'') break;
+        else temp[i] = command_line[i];
+    }*/
+    temp = strtok(command_line,"'");
+    while( temp!= NULL )
+    {
+      resp[i] = temp;
+      temp = strtok(NULL, "'");
+      i++;
     }
-    if(j<len){
-        printf("ERRO\n");
-        free(resp);
-        return NULL;
-    }
-    return resp;
 }
 
 TAD *getLocal(char *str){
