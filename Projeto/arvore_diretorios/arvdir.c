@@ -30,6 +30,26 @@ TAD *cria (char *c, int arq, int perm, char tipo){
     return a;
 };
 
+void transformar(TAD *a){
+    if(a->arquivo){
+        TArq *x = (TArq*) a->info;
+        TDir *novo = criar_dir(x->nome);
+        novo->dat_criacao = x->dat_criacao;
+        free(a->info);
+        a->info = (void*) novo;
+    }
+    else{
+        TDir *x = (TDir*) a->info;
+        int per;
+        char tip;
+        scanf("%d%c",&per,&tip);
+        TArq *novo = cria_arq(x->nome,tip,per);
+        novo->dat_criacao = x->dat_criacao;
+        free(a->info);
+        a->info = (void*) novo;
+    }
+}
+
 //inserção de subarvore "filho" em uma arvore "pai"
 void inserir (TAD *afilho, TAD *apai){
     if(apai->arquivo){
