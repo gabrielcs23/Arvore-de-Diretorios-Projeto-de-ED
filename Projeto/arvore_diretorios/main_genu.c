@@ -5,13 +5,13 @@
 #include <stdio.h>
 #include <string.h>
 #include "arvdir.c"
-#include "commands.c"
+#include "commands.h"
 
 int main()
 {
 
 	// inicializa...
-	TAD* raiz = (TAD*)malloc(sizeOf(TAD));
+	TAD* raiz = (TAD*)malloc(sizeof(TAD));
 	TAD* cur_dir = raiz;
 
 
@@ -22,32 +22,31 @@ int main()
 	{
 		// recebe o comando.
 		printf(">");
-		fgets(command, MAX_COMMAND_SIZE, stdin);
-
+		fgets(command, MAX_COMMAND_SIZE, stdin); //ta pegando \n tb
 		// identifica o argumento principal.
-		if(!strcmp(command,"ls"))
+		if(!strcmp(command,"ls\n"))
 		{
-			void ls(cur_dir);
+			ls(cur_dir);
 		}
-		else if (!strcmp(command,"cd"))
+		else if (!strcmp(command,"cd\n"))
 		{
 			char address[BUFFER_SIZE];
 			fgets(address,BUFFER_SIZE,stdin);
 			cur_dir = cd(cur_dir, address);
 		}
-		else if (!strcmp(command,"mv"))
+		else if (!strcmp(command,"mv\n"))
 		{
 
 		}
-		else if (!strcmp(command,"rm"))
+		else if (!strcmp(command,"rm\n"))
 		{
 
 		}
-		else if (!strcmp(command,"mkdir"))
+		else if (!strcmp(command,"mkdir\n"))
 		{
 
 		}
-		else if (!strcmp(command,""))
+		else if (!strcmp(command,"\n"))
 		{
 
 		}
