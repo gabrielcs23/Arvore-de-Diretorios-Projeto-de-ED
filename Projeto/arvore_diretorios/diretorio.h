@@ -6,7 +6,6 @@
 typedef struct diretorio{
     char *nome, dat_criacao[22], dat_atualiza[22];
     int permissoes, num_arq, num_dir;
-
 }TDir;
 
 TDir* criar_dir(char *c){
