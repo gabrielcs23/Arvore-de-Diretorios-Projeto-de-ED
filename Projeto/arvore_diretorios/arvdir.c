@@ -99,6 +99,7 @@ void destruir (TAD *a){
 }
 //busca e retorna o nó com o nome procurando-o na subárvore a
 TAD* busca (TAD* a, char *c){
+    if(!a) return NULL;
     if(a->arquivo){
         TArq *aux;
         aux = (TArq*) a->info;
@@ -117,8 +118,8 @@ TAD* busca (TAD* a, char *c){
         for(p=a->filho;p;p=p->irmao){
             r = busca(p,c);
             if(r) return r;
-            }
         }
+    }
     return NULL;
 }
 
@@ -130,6 +131,7 @@ void imprime (TAD *a){
 }
 
 char * getNome(TAD *a){
+    if(!a) return NULL;
     if(a->arquivo){
         TArq *aux = (TArq*)a->info;
         return aux->nome;
@@ -137,6 +139,23 @@ char * getNome(TAD *a){
     else{
         TDir *aux = (TDir*)a->info;
         return aux->nome;
+    }
+}
+
+//nao verifica duplicatas; é chamada pela mv e recebe o no a ser alterado
+void renomear(TAD *a, char *new_name){
+    time_t tempo;
+    time(&tempo);
+    struct tm *info = localtime(&tempo);
+    if(a->arquivo){
+        TArq *ar = (TArq*) a->info;
+        ar->nome = new_name;
+        strftime(ar->dat_atualiza,22,"%d/%m/%Y - %H:%M:%S", info);
+    }
+    else{
+        TDir *dir = (TDir*) a->info;
+        dir->nome = new_name;
+        strftime(dir->dat_atualiza,22,"%d/%m/%Y - %H:%M:%S", info);
     }
 }
 
