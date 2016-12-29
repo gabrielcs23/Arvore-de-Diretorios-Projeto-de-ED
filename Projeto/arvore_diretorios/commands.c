@@ -41,19 +41,10 @@ void ls(TAD* cur_dir)
 
 // cd
 
-TAD* cd(TAD* cur_dir, char* command_line)	// bugres: "cd //////////filho1/filho1filho1" funciona.
+TAD* getAddress(TAD* cur_dir, char* command_line)	// bugres: "cd //////////filho1/filho1filho1" funciona.
 {
-	TAD* original_dir = cur_dir;
 	char address[MAX_NAME_SIZE];
 	int i = -1, j = 0;
-
-	// cd .. para ir um nível acima
-	if ((command_line[0] == '.') && (command_line[1] == '.'))
-	{
-		if(cur_dir->pai)
-			cur_dir = cur_dir->pai;
-		return cur_dir;
-	}
 
 	while ((i==-1) || ((command_line[i] != '\n') && (command_line[i] != '\0')))
 	{
@@ -68,7 +59,7 @@ TAD* cd(TAD* cur_dir, char* command_line)	// bugres: "cd //////////filho1/filho1
 				if (new_dir) // se encontrar o endereço, continua até o final do comando
 					cur_dir = new_dir;
 				else // se não encontrar o endereço, cancela o comando
-					return original_dir;
+					return NULL;
 
 				j = 0;
 			}
@@ -79,17 +70,47 @@ TAD* cd(TAD* cur_dir, char* command_line)	// bugres: "cd //////////filho1/filho1
 			j++;
 		}
 	}
-
 	return cur_dir;
+}
+
+TAD *cd(TAD* cur_dir, char* command_line){
+    // cd .. para ir um nível acima
+	if ((command_line[0] == '.') && (command_line[1] == '.'))
+	{
+		if(cur_dir->pai)
+			cur_dir = cur_dir->pai;
+		return cur_dir;
+	}
+    TAD *org_dir = cur_dir;
+    cur_dir = getAddress(cur_dir,command_line);
+    if(cur_dir) return cur_dir;
+    return org_dir;
 }
 
 // mv
 
-void mv(TAD* a, char* command_line)
+/*void mv(TAD* curr_dir, char* end_org, char* end_dest)
 {
 	// fazer um "getxxxxx()" baseado no formato do cd e no diretorio atual. usar aqui e no cd...
+    TAD *org = getAddress(curr_dir,end_org);
+    TAD *dest = getAddress(curr_dir,end_dest);
+    if(!org){
+        printf("Endereço invalido\n");
+        return;
+    }
+    if(!dest){
+        int i, len = strlen(end_dest);
+        for(i=0;i<len;i++){
+            if(end_dest[i]==SEPARADOR){
+                printf("Não é possivel utilizar \"%c\" para renomear\n",SEPARADOR);
+                return;
+            }
+        }
+        renomear(curr_dir,end_dest);
+    }
+    else if()
 
-}
+}*/
 
 // rename
 /*void renameM(TAD *a, char* command_line)
@@ -138,23 +159,6 @@ void mv(TAD* a, char* command_line)
 		}
 	}
 }*/
-
-//nao verifica duplicatas; é chamada pela mv e recebe o no a ser alterado
-void renomear(TAD *a, char *new_name){
-    time_t tempo;
-    time(&tempo);
-    struct tm *info = localtime(&tempo);
-    if(a->arquivo){
-        TArq *ar = (TArq*) a->info;
-        ar->nome = new_name;
-        strftime(ar->dat_atualiza,22,"%d/%m/%Y - %H:%M:%S", info);
-    }
-    else{
-        TDir *dir = (TDir*) a->info;
-        dir->nome = new_name;
-        strftime(dir->dat_atualiza,22,"%d/%m/%Y - %H:%M:%S", info);
-    }
-}
 
 // rm
 void rmOld(TAD *a, char* command_line){
