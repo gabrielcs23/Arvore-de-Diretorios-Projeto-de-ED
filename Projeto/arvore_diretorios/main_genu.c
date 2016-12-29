@@ -1,5 +1,5 @@
 #define BUFFER_SIZE 256
-#define MAX_COMMAND_SIZE 16
+#define MAX_COMMAND_SIZE 256
 
 
 #include <stdio.h>
@@ -11,44 +11,72 @@ int main()
 {
 
 	// inicializa...
-	TAD* raiz = (TAD*)malloc(sizeof(TAD));
+	TAD* raiz = exemplo_rosseti("exemplo.txt");
 	TAD* cur_dir = raiz;
 
 
 
 	printf("Digite seu comando:\n>");
 	char command[MAX_COMMAND_SIZE];
+	char arg1[BUFFER_SIZE], arg2[BUFFER_SIZE];
+	int perm;
 	while (1)
 	{
 		// recebe o comando.
 		printf(">");
-		fgets(command, MAX_COMMAND_SIZE, stdin); //ta pegando \n tb
+		print_address(cur_dir);
+		printf(": ");
+		ler(command);
 		// identifica o argumento principal.
-		if(!strcmp(command,"ls\n"))
+		if(!strcmp(command,"ls"))
 		{
-			ls(cur_dir);
+			ls(cur_dir,0);
 		}
-		else if (!strcmp(command,"cd\n"))
+		else if(!strcmp(command,"ls+"))
+        {
+            ls(cur_dir,1);
+        }
+		else if (!strcmp(command,"cd"))
 		{
-			char address[BUFFER_SIZE];
-			fgets(address,BUFFER_SIZE,stdin);
-			cur_dir = cd(cur_dir, address);
+			ler(arg1);
+			cur_dir = cd(cur_dir, arg1);
 		}
-		else if (!strcmp(command,"mv\n"))
+		else if (!strcmp(command,"mv"))
 		{
+            ler(arg1);
+            ler(arg2);
+            mv(cur_dir,arg1,arg2);
+		}
+		else if (!strcmp(command,"rm"))
+		{
+            ler(arg1);
+            rm(cur_dir,arg1);
+		}
+		else if (!strcmp(command,"mkdir"))
+		{
+            ler(arg1);
+            ler(arg2);
+            perm = atoi(arg2);
+            mkdir(cur_dir,arg1,perm);
+		}
+		else if (!strcmp(command,"touch"))
+		{
+		    ler(arg1);
+		    touch(cur_dir,arg1);
+		}
 
-		}
-		else if (!strcmp(command,"rm\n"))
-		{
+        else if (!strcmp(command,"transform"))
+        {
+            ler(arg1);
+            transformar(getAddress(cur_dir,arg1));
+        }
 
-		}
-		else if (!strcmp(command,"mkdir\n"))
+		else if (!strcmp(command,""))
 		{
-
+            continue;
 		}
-		else if (!strcmp(command,"\n"))
-		{
-
+		else if(!strcmp(command,"clear")){
+            system("cls");
 		}
 		else
 		{

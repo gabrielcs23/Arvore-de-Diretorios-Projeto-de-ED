@@ -12,7 +12,9 @@ typedef struct arvdir{
 }TAD;
 
 //definição dos métodos básicos de árvores
-TAD *cria (char *c, int arq, int perm, char tipo){
+TAD *cria (char *name, int arq, int perm, char tipo){
+    char *c = (char*)malloc(sizeof(char)*(strlen(name)+1));
+    strcpy(c,name);
     TAD *a = (TAD*) malloc (sizeof(TAD));
     if(arq){
         TArq *x = cria_arq(c, tipo, perm);
@@ -72,6 +74,14 @@ void mover(TAD *a, TAD*b){
     a->pai = b;
     a->irmao = b->filho;
     b->filho = a;
+    if(!a->arquivo){
+        TDir *aux = (TDir*)b->info;
+        aux->num_dir++;
+    }
+    else{
+        TDir *aux = (TDir*)b->info;
+        aux->num_arq++;
+    }
 }
 
 //remove um nó e seus filhos
@@ -79,6 +89,7 @@ void destruir (TAD *a){
     // probido destruir a raiz; destroi tudo abaixo dela
     if(!a->pai){
         destruir(a->filho);
+        return;
     }
     TAD *i;
     i = a->pai->filho;
@@ -147,15 +158,59 @@ void renomear(TAD *a, char *new_name){
     time_t tempo;
     time(&tempo);
     struct tm *info = localtime(&tempo);
+    char *novo = (char*)malloc(sizeof(char)*(strlen(new_name)+1));
+    strcpy(novo,new_name);
     if(a->arquivo){
         TArq *ar = (TArq*) a->info;
-        ar->nome = new_name;
+        ar->nome = novo;
         strftime(ar->dat_atualiza,22,"%d/%m/%Y - %H:%M:%S", info);
     }
     else{
         TDir *dir = (TDir*) a->info;
-        dir->nome = new_name;
+        dir->nome = novo;
         strftime(dir->dat_atualiza,22,"%d/%m/%Y - %H:%M:%S", info);
     }
 }
 
+void ler_c(char* str)
+{
+    fgets(str, 8, stdin);
+    int i = 0;
+    while (str[i] != '\n') i++;
+    str[i] = '\0';
+}
+
+void transformar(TAD *a){
+    if(!a){
+        printf("Parâmetro inválido\n");
+        return;
+    }
+    char *nome;
+     if(a->arquivo){
+         TArq *x = (TArq*) a->info;
+         TDir *novo = criar_dir(x->nome);
+         strcpy(novo->dat_criacao,x->dat_criacao);
+         free(a->info);
+         a->info = (void*) novo;
+         a->arquivo = 0;
+         TDir *pai = (TDir*) a->pai->info;
+         pai->num_arq--;
+         pai->num_dir++;
+     }
+     else{
+         TDir *x = (TDir*) a->info;
+         int per;
+         char tip;
+         char c[8];
+         ler_c(c);
+         per = atoi(c);
+         ler_c(c);
+         tip = c[0];
+         TAD *novo = cria(x->nome,1,per,tip);
+         TDir *tmp = (TDir*)novo->info;
+         strcpy(tmp->dat_criacao,x->dat_criacao);
+         inserir(novo,a->pai);
+         TDir *pai = (TDir*) a->pai->info;
+         destruir(a);
+     }
+ }
