@@ -4,7 +4,10 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "arvdir.c"
+#include <time.h>
+#include "arquivo.h"
+#include "diretorio.h"
+#include "arvdir.h"
 #include "commands.h"
 
 int main()
@@ -78,10 +81,14 @@ int main()
 		else if(!strcmp(command,"clear")){
             system("cls");
 		}
+		else if(!strcmp(command,"exit")){
+            liberar(raiz);
+            break;
+		}
 		else
 		{
 			printf("Comando inválido.\n");
 		}
 	}
-
+    return 0;
 }

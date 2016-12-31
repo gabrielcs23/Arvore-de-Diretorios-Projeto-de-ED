@@ -15,7 +15,7 @@ void ler(char *str);
 
 void ls(TAD* cur_dir,int mais_info)
 {
-	if(mais_info && !cur_dir->pai){
+	if(mais_info/* && !cur_dir->pai*/){
         printf("Nome do diretorio atual: %s",getNome(cur_dir));
         print_info(cur_dir);
         printf("\n\n");
@@ -90,7 +90,11 @@ TAD *cd(TAD* cur_dir, char* command_line){
 	}
     TAD *org_dir = cur_dir;
     cur_dir = getAddress(cur_dir,&command_line[n]);
-    if(cur_dir && !cur_dir->arquivo) return cur_dir;
+    if(!cur_dir){
+        printf("Diretório não encontrado\n");
+        return org_dir;
+    }
+    if(!cur_dir->arquivo) return cur_dir;
     //nao pode entrar em arquivo
     if(cur_dir->arquivo)
         printf("Operação inválida\n");
@@ -101,7 +105,19 @@ TAD *cd(TAD* cur_dir, char* command_line){
 
 void mv(TAD* curr_dir, char* end_org, char* end_dest)
 {
-	// fazer um "getxxxxx()" baseado no formato do cd e no diretorio atual. usar aqui e no cd...
+    // caso renomear raiz
+    if(!strcmp(getNome(curr_dir),end_org)){
+        int i, len = strlen(end_dest);
+        for(i=0;i<len;i++){
+            if(end_dest[i]==SEPARADOR){
+                printf("Não é possivel utilizar \"%c\" para renomear\n",SEPARADOR);
+                return;
+            }
+        }
+        renomear(curr_dir,end_dest);
+        atualiza_data(curr_dir);
+        return;
+    }
     TAD *org = getAddress(curr_dir,end_org);
     TAD *dest = getAddress(curr_dir,end_dest);
     // caso origem invalida
@@ -141,12 +157,18 @@ void mv(TAD* curr_dir, char* end_org, char* end_dest)
             fgets(tmp, 4, stdin);
             if (tmp && !strcmp(tmp, "s\n"))
             {
-                destruir(com_mesmo_nome);
+                destruir(com_mesmo_nome,0);
                 mover(org, dest);
                 atualiza_data(dest);
             }
         }
-        else mover(org,dest);
+        else{
+            mover(org,dest);
+            TDir *x = (TDir*) curr_dir->info;
+            if(org->arquivo)
+                x->num_arq--;
+            else x->num_dir--;
+        }
     }
 }
 
@@ -200,10 +222,20 @@ void mv(TAD* curr_dir, char* end_org, char* end_dest)
 
 // rm
 void rm(TAD *curr_dir, char *address){
+    //não permite remover a raiz: olhar metodo destruir
+    if(!strcmp(getNome(curr_dir),address)){
+        atualiza_data(curr_dir);
+        destruir(curr_dir,1);
+        //precisei forcar aqui
+       /* TDir *info = (TDir*) curr_dir->info;
+        info->num_arq = 0;
+        info->num_dir = 0;*/
+        return;
+    }
     TAD *alvo = busca_filhos(curr_dir,address);
     if(alvo){
         atualiza_data(alvo->pai);
-        destruir(alvo);
+        destruir(alvo,0);
     }
     else{
         printf("Arquivo/Diretorio não encontrado\n");
