@@ -55,6 +55,14 @@ void liberar (TAD *a){
         liberar(p);
         p = t;
     }
+    if(a->arquivo){
+        TArq *x = (TArq*) a->info;
+        free(x->nome);
+    }
+    else{
+        TDir *x = (TDir*) a->info;
+        free(x->nome);
+    }
     free(a->info);
     free(a);
 }

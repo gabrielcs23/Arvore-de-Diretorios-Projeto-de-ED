@@ -26,13 +26,13 @@ void ls(TAD* cur_dir,int mais_info)
 	{
 		if(p->arquivo){
             TArq *aux = (TArq*)p->info;
-            printf(aux->nome);
+            printf("%s",aux->nome);
             tamNome = strlen(aux->nome);
 		}
 		else{
             TDir *aux = (TDir*)p->info;
             printf("/");
-            printf(aux->nome);
+            printf("%s",aux->nome);
             tamNome = strlen(aux->nome);
 		}
         if(mais_info){
@@ -43,9 +43,8 @@ void ls(TAD* cur_dir,int mais_info)
 	}
 }
 
-// cd
-
-TAD* getAddress(TAD* cur_dir, char* command_line)	// bugres: "cd //////////filho1/filho1filho1" funciona.
+//retorna um no dado seu nome
+TAD* getAddress(TAD* cur_dir, char* command_line)
 {
 	char address[MAX_NAME_SIZE];
 	int i = -1, j = 0;
@@ -91,13 +90,13 @@ TAD *cd(TAD* cur_dir, char* command_line){
     TAD *org_dir = cur_dir;
     cur_dir = getAddress(cur_dir,&command_line[n]);
     if(!cur_dir){
-        printf("Diretório não encontrado\n");
+        printf("Diretorio nao encontrado\n");
         return org_dir;
     }
     if(!cur_dir->arquivo) return cur_dir;
     //nao pode entrar em arquivo
     if(cur_dir->arquivo)
-        printf("Operação inválida\n");
+        printf("Operacao invalida\n");
     return org_dir;
 }
 
@@ -110,7 +109,7 @@ void mv(TAD* curr_dir, char* end_org, char* end_dest)
         int i, len = strlen(end_dest);
         for(i=0;i<len;i++){
             if(end_dest[i]==SEPARADOR){
-                printf("Não é possivel utilizar \"%c\" para renomear\n",SEPARADOR);
+                printf("Nao eh possivel utilizar \"%c\" para renomear\n",SEPARADOR);
                 return;
             }
         }
@@ -122,7 +121,7 @@ void mv(TAD* curr_dir, char* end_org, char* end_dest)
     TAD *dest = getAddress(curr_dir,end_dest);
     // caso origem invalida
     if(!org){
-        printf("Endereço invalido\n");
+        printf("Endereco invalido\n");
         return;
     }
     //caso renomear
@@ -130,7 +129,7 @@ void mv(TAD* curr_dir, char* end_org, char* end_dest)
         int i, len = strlen(end_dest);
         for(i=0;i<len;i++){
             if(end_dest[i]==SEPARADOR){
-                printf("Não é possivel utilizar \"%c\" para renomear\n",SEPARADOR);
+                printf("Nao eh possivel utilizar \"%c\" para renomear\n",SEPARADOR);
                 return;
             }
         }
@@ -138,13 +137,18 @@ void mv(TAD* curr_dir, char* end_org, char* end_dest)
         atualiza_data(curr_dir);
     }
     else{
+        //nao pode pendurar em no arquivo
+        if(dest->arquivo){
+            printf("Operacao Invalida\n");
+            return;
+        }
         //verifica se origem é ancestral de destino
         TAD *tmp = dest;
         while (tmp)
         {
             if (tmp == org)
             {
-                printf("Pasta de destino é subpasta da pasta de origem. Operação inválida.\n");
+                printf("Pasta de destino eh subpasta da pasta de origem. Operacao invalida.\n");
                 return;
             }
             tmp = tmp->pai;
@@ -152,7 +156,7 @@ void mv(TAD* curr_dir, char* end_org, char* end_dest)
         TAD* com_mesmo_nome = busca_filhos(dest, getNome(org));
         if (com_mesmo_nome)
         {
-            printf("Destino já contem um arquivo com este mesmo nome. Digite 's' se quiser substituir o arquivo no destino, dê apenas enter para cancelar.\n");
+            printf("Destino ja contem um arquivo com este mesmo nome. Digite 's' se quiser substituir o arquivo no destino, de apenas enter para cancelar.\n");
             char tmp[4];
             fgets(tmp, 4, stdin);
             if (tmp && !strcmp(tmp, "s\n"))
@@ -226,10 +230,6 @@ void rm(TAD *curr_dir, char *address){
     if(!strcmp(getNome(curr_dir),address)){
         atualiza_data(curr_dir);
         destruir(curr_dir,1);
-        //precisei forcar aqui
-       /* TDir *info = (TDir*) curr_dir->info;
-        info->num_arq = 0;
-        info->num_dir = 0;*/
         return;
     }
     TAD *alvo = busca_filhos(curr_dir,address);
@@ -238,7 +238,7 @@ void rm(TAD *curr_dir, char *address){
         destruir(alvo,0);
     }
     else{
-        printf("Arquivo/Diretorio não encontrado\n");
+        printf("Arquivo/Diretorio nao encontrado\n");
     }
 }
 
@@ -257,11 +257,11 @@ void mkdir(TAD *curr_dir, char* name, int permissao)
 }
 
 void touch (TAD *curr_dir, char* name)
-//mesma coisa do mkdir, pensar em argumentos para tipo e permissão
+//mesma coisa do mkdir
 {
-
 	TAD *mesmo_nome = busca_filhos(curr_dir, name);
     if(mesmo_nome){
+        printf("Data atualizada\n");
         atualiza_data(curr_dir);
         return;
     }
@@ -270,7 +270,11 @@ void touch (TAD *curr_dir, char* name)
     char tmp[9];
     ler(tmp);
     permissao = atoi(tmp);
-    ler(tmp);
+    do{
+        ler(tmp);
+        if((strcmp("T",tmp)) && (strcmp("B",tmp)))
+            printf("Tipo invalido\n");
+    }while((strcmp("T",tmp)) && (strcmp("B",tmp)));
     tipo = tmp[0];
     TAD *ins = cria(name,1,permissao,tipo);
     inserir(ins,curr_dir);
@@ -287,7 +291,7 @@ void print_info(TAD* a)
         printf("\n\tCriado em: %s\tModificado em: %s\n", aux->dat_criacao, aux->dat_atualiza);
         //for (i = 0; i < MAX_NAME_SIZE; i++)	printf(" "); 	// espaços pra deixar mais bonitinho?
         printf("\tPermissoes: %d", aux->permissoes);
-        printf("\tTipo de arq.: %c",aux->tipo);
+        printf("\tTipo de arq.: %c\t\tTam. arquivo: %d",aux->tipo, aux->tam);
 	}
 	else{
         TDir *aux = (TDir*)a->info;
@@ -321,6 +325,7 @@ void ler(char* str)
 
 TAD * exemplo_rosseti(char * diretorio)
 //todo arranjar um nome melhor
+// raiz necessita ser um diretorio
 {
 	FILE * fp = fopen(diretorio, "r");
 	TAD* r;
@@ -329,16 +334,9 @@ TAD * exemplo_rosseti(char * diretorio)
 	char * dir = strtok(le,"/");
 	char * nome = strtok(NULL,"/");
 	char * pai = strtok(NULL,"/");
-	char * dat_cria = strtok(NULL,"/");
-	char * hora_cria = strtok(NULL,"/");
+	char *tam;
 	if (!strcmp(dir, "D")){
 		r = cria(nome, 0, 0, 'n');
-	}
-	else if (!strcmp(dir, "T")){
-		r = cria(nome, 1, 0, 'T');
-	}
-	else if (!strcmp(dir, "B")){
-		r = cria(nome, 1, 0, 'B');
 	}
 	while (fgets(le, 255, (FILE*)fp))
 	{
@@ -346,16 +344,19 @@ TAD * exemplo_rosseti(char * diretorio)
 		dir = strtok(le,"/");
 		nome = strtok(NULL,"/");
 		pai = strtok(NULL,"/");
-		dat_cria = strtok(NULL,"/");
-		hora_cria = strtok(NULL,"/");
 		if (!strcmp(dir, "D")){
 			filho = cria(nome, 0, 0, 'n');
 		}
-		else if (!strcmp(dir, "T")){
-			filho = cria(nome, 1, 0, 'T');
-		}
-		else if (!strcmp(dir, "B")){
-			filho = cria(nome, 1, 0, 'B');
+		else{
+            if (!strcmp(dir, "T")){
+                filho = cria(nome, 1, 0, 'T');
+            }
+            else if (!strcmp(dir, "B")){
+                filho = cria(nome, 1, 0, 'B');
+            }
+            tam = strtok(NULL,"/");
+            TArq *info = (TArq*) filho->info;
+            info->tam = atoi(tam);
 		}
 		if(!strcmp(getNome(r),pai)){
             inserir(filho, r);

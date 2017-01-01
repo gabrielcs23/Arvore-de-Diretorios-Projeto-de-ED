@@ -6,6 +6,7 @@
 typedef struct arq{
     char *nome, tipo, dat_criacao[22], dat_atualiza[22];
     int permissoes;
+    int tam;
     FILE *arquivo;
 }TArq;
 
@@ -19,6 +20,7 @@ TArq *cria_arq(char *c, char tipo, int perm){
     strftime(a->dat_criacao,22,"%d/%m/%Y - %H:%M:%S", info);
     strftime(a->dat_atualiza,22,"%d/%m/%Y - %H:%M:%S", info);
     a->permissoes = perm;
+    a->tam = 0;
     return a;
 }
 
