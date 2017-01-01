@@ -9,13 +9,12 @@ void print_info(TAD* a);
 TAD* busca_filhos (TAD* a, char* c);
 void atualiza_data(TAD *a);
 void ler(char *str);
-//TAD* busca_genu (TAD* a, char *c);
+
 
 // ls
-
 void ls(TAD* cur_dir,int mais_info)
 {
-	if(mais_info/* && !cur_dir->pai*/){
+	if(mais_info){
         printf("Nome do diretorio atual: %s",getNome(cur_dir));
         print_info(cur_dir);
         printf("\n\n");
@@ -76,6 +75,8 @@ TAD* getAddress(TAD* cur_dir, char* command_line)
 	return cur_dir;
 }
 
+
+//cd
 TAD *cd(TAD* cur_dir, char* command_line){
     // cd .. para ir um nível acima
     int n = 0;
@@ -100,8 +101,8 @@ TAD *cd(TAD* cur_dir, char* command_line){
     return org_dir;
 }
 
-// mv
 
+// mv
 void mv(TAD* curr_dir, char* end_org, char* end_dest)
 {
     // caso renomear raiz
@@ -176,53 +177,6 @@ void mv(TAD* curr_dir, char* end_org, char* end_dest)
     }
 }
 
-// rename
-/*void renameM(TAD *a, char* command_line)
-{
-	char address[MAX_NAME_SIZE];
-	int i = 2, j = 0;
-	while ((command_line[i] != '\n') || (command_line[i] != '\0'))
-	{
-		i++;
-		if (command_line[i] == '\0')
-		{
-			if (j > 0) // se 'address' não for vazia
-			{
-				address[j] = '\0';
-				if(!a->pai)
-				{
-					TDir *mod = (TDir*) a->info;
-					mod->nome = address;
-				}
-				TAD *mesmo_nome = busca_filhos(a->pai,address);
-				if(mesmo_nome)
-				{
-					//podemos sobrescrever neste caso
-					//ou até mesmo colocar um scanf e perguntar se o usuario quer sobrescrever
-					//ou deixar de fazer a operação
-					printf("Diretorio ou arquivo ja existente");
-					return;
-				}
-				if(a->arquivo)
-				{
-					TArq *mod = (TArq*) a->info;
-					mod->nome = address;
-				}
-				else
-				{
-					TDir *mod = (TDir*) a->info;
-					mod->nome = address;
-				}
-
-			}
-		}
-		else
-		{
-			address[j] = command_line[i];
-			j++;
-		}
-	}
-}*/
 
 // rm
 void rm(TAD *curr_dir, char *address){
@@ -242,9 +196,9 @@ void rm(TAD *curr_dir, char *address){
     }
 }
 
+
 // mkdir
 void mkdir(TAD *curr_dir, char* name, int permissao)
-//seria interessante pensar em colocar argumentos para criar o diretório com permissões escolhidas pelo usuário
 {
 	TAD *mesmo_nome = busca_filhos(curr_dir, name);
     if(mesmo_nome){
@@ -256,8 +210,9 @@ void mkdir(TAD *curr_dir, char* name, int permissao)
     atualiza_data(curr_dir);
 }
 
+//touch
 void touch (TAD *curr_dir, char* name)
-//mesma coisa do mkdir
+//mesmo principio do mkdir
 {
 	TAD *mesmo_nome = busca_filhos(curr_dir, name);
     if(mesmo_nome){
@@ -281,6 +236,7 @@ void touch (TAD *curr_dir, char* name)
     atualiza_data(curr_dir);
 }
 
+
 // info, etc
 
 void print_info(TAD* a)
@@ -289,19 +245,18 @@ void print_info(TAD* a)
 	if(a->arquivo){
         TArq *aux = (TArq*)a->info;
         printf("\n\tCriado em: %s\tModificado em: %s\n", aux->dat_criacao, aux->dat_atualiza);
-        //for (i = 0; i < MAX_NAME_SIZE; i++)	printf(" "); 	// espaços pra deixar mais bonitinho?
         printf("\tPermissoes: %d", aux->permissoes);
         printf("\tTipo de arq.: %c\t\tTam. arquivo: %d",aux->tipo, aux->tam);
 	}
 	else{
         TDir *aux = (TDir*)a->info;
         printf("\n\tCriado em: %s\tModificado em: %s\n", aux->dat_criacao, aux->dat_atualiza);
-        //for (i = 0; i < MAX_NAME_SIZE; i++)	printf(" "); 	// espaços pra deixar mais bonitinho?
         printf("\tPermissoes: %d", aux->permissoes);
         printf("\tNum. de Arquivos: %d\tNum. de Pastas: %d", aux->num_arq, aux->num_dir);
 	}
 }
 
+//verifica vizinhancas
 TAD* busca_filhos (TAD* a, char* c)
 {
     if(!a) return NULL;
@@ -315,6 +270,7 @@ TAD* busca_filhos (TAD* a, char* c)
 	return NULL;
 }
 
+//elimina \n na leitura
 void ler(char* str)
 {
     fgets(str, BUFFER_SIZE, stdin);
@@ -370,6 +326,7 @@ TAD * exemplo_rosseti(char * diretorio)
 	return r;
 }
 
+//indica caminho atual
 void print_address(TAD *dir)
 {
     if (dir)
@@ -397,38 +354,5 @@ void atualiza_data(TAD *a)
         }
     }
 }
-
-/*void split(char *command_line,char *resp[],int tam_max){
-    int i=0,j;
-    char *temp;
-    char aux[strlen(command_line)];
-    //for(i=0;command_line[i]!='\0';i++){
-      //  if(command_line[i]=='\'') break;
-        //else temp[i] = command_line[i];
-    //}
-    temp = strtok(command_line,"'");
-    while( temp!= NULL )
-    {
-      resp[i] = temp;
-      temp = strtok(NULL, "'");
-      i++;
-    }
-}
-*/
-/*TAD* busca_genu (TAD* a, char *c)
-{
-
-	if (!strcmp(c, getNome(a)))
-		return a;
-
-    TAD* r,*p;
-	for (p=a->filho; p; p=p->irmao)
-	{
-		r = busca(p,c);
-		if (r) return r;
-	}
-
-    return NULL;
-}*/
 
 #endif // COMMANDS_H_INCLUDED

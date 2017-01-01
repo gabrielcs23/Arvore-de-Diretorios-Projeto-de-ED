@@ -115,6 +115,7 @@ void destruir (TAD *a, int atual){
     }
     liberar(a);
 }
+
 //busca e retorna o nó com o nome procurando-o na subárvore a
 TAD* busca (TAD* a, char *c){
     if(!a) return NULL;

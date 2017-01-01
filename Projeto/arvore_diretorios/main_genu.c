@@ -79,7 +79,12 @@ int main()
             continue;
 		}
 		else if(!strcmp(command,"clear")){
-            system("cls");
+            //para funcionar em Windows e Linux tb
+            #ifdef WINDOWS
+                system("cls");
+            #else
+                system ("clear");
+            #endif
 		}
 		else if(!strcmp(command,"exit")){
             liberar(raiz);
