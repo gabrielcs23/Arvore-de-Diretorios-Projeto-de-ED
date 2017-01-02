@@ -91,7 +91,22 @@ int main()
             break;
 		}
 		else if(!strcmp(command,"help")){
-			printf("Lista de comandos:\n\thelp: Mostra os comandos disponiveis.\n\tls: Mostra arquivos e diretorios do diretorio atual.\n\tls+: Mostra arquivos e diretorios do diretório atual com informacoes detalhadas.\n\tcd: Troca de diretorio. Usa um argumento apos o comando.\n\t\t- .. Sobe um nivel de diretorio.\n\t\t- <nome_filho> Vai para o subdiretorio com o nome especificado. Pode ser escrito com separadores para alcancar descendetes mais distantes.\n\tmv: Move um filho deste diretorio para outro. Primeiro argumento filho, segundo argumento destino. Se o destino nao existir, renomeia o filho com o nome passado como destino.\n\trm: Remove um filho deste diretorio com o nome passado no argumento.\n\tmkdir: Cria um novo diretorio filho do atual com o nome especificado no primeiro argumento e a permissao no segundo argumento.\n\ttouch: Muda a data de atualizacao do arquivo com o nome passado no argumento e, se ele nao existir, cria um novo arquivo e recebe mais dois argumentos, um de permissao e outro de tipo de arquivo (T ou B).\n\ttransform: Transforma um arquivo passado como argumento em diretorio e vice versa. Recebe ainda um argumento de tipo (T ou B) se for transformado para arquivo.\n\tclear: Limpa o texto da tela.\n\texit: Termina a execucao do programa.\n")
+			printf("Lista de comandos:\n\thelp: Mostra os comandos disponiveis.\n");
+			printf("\tls: Mostra arquivos e diretorios do diretorio atual.\n");
+			printf("\tls+: Mostra arquivos e diretorios do diretório atual com informacoes detalhadas.\n");
+			printf("\tcd: Troca de diretorio. Usa um argumento apos o comando.\n\t\t- .. Sobe um nivel de diretorio.\n");
+			printf("\t\t- <nome_filho> Vai para o subdiretorio com o nome especificado. Pode ser escrito ");
+			printf("com separadores para alcancar descendetes mais distantes.\n");
+			printf("\tmv: Move um filho deste diretorio para outro. Primeiro argumento filho, segundo argumento destino.");
+			printf(" Se o destino nao existir, renomeia o filho com o nome passado como destino.\n");
+			printf("\trm: Remove um filho deste diretorio com o nome passado no argumento.\n");
+			printf("\tmkdir: Cria um novo diretorio filho do atual com o nome especificado no primeiro argumento");
+			printf(" e a permissao no segundo argumento.\n");
+			printf("\ttouch: Muda a data de atualizacao do arquivo com o nome passado no argumento e, se ele nao existir,");
+			printf(" cria um novo arquivo e recebe mais dois argumentos, um de permissao e outro de tipo de arquivo (T ou B).\n");
+			printf("\ttransform: Transforma um arquivo passado como argumento em diretorio e vice versa.");
+			printf(" Recebe ainda um argumento de tipo (T ou B) se for transformado para arquivo.\n");
+			printf("\tclear: Limpa o texto da tela.\n\texit: Termina a execucao do programa.\n");
 		}
 		else
 		{
