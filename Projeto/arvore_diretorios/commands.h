@@ -53,14 +53,14 @@ TAD* getAddress(TAD* cur_dir, char* command_line)
         i++;
 		if (command_line[i] == SEPARADOR || command_line[i] == '\0' || command_line[i] == '\n')
 		{
-			if (j > 0) // se 'address' n„o for vazia
+			if (j > 0) // se 'address' n√£o for vazia
 			{
 				address[j] = '\0';
 
 				TAD* new_dir = busca_filhos(cur_dir, address);
-				if (new_dir) // se encontrar o endereÁo, continua atÈ o final do comando
+				if (new_dir) // se encontrar o endere√ßo, continua at√© o final do comando
 					cur_dir = new_dir;
-				else // se n„o encontrar o endereÁo, cancela o comando
+				else // se n√£o encontrar o endere√ßo, cancela o comando
 					return NULL;
 
 				j = 0;
@@ -78,7 +78,7 @@ TAD* getAddress(TAD* cur_dir, char* command_line)
 
 //cd
 TAD *cd(TAD* cur_dir, char* command_line){
-    // cd .. para ir um nÌvel acima
+    // cd .. para ir um n√≠vel acima
     int n = 0;
 	if ((command_line[0] == '.') && (command_line[1] == '.'))
 	{
@@ -143,7 +143,7 @@ void mv(TAD* curr_dir, char* end_org, char* end_dest)
             printf("Operacao Invalida\n");
             return;
         }
-        //verifica se origem È ancestral de destino
+        //verifica se origem √© ancestral de destino
         TAD *tmp = dest;
         while (tmp)
         {
@@ -180,7 +180,7 @@ void mv(TAD* curr_dir, char* end_org, char* end_dest)
 
 // rm
 void rm(TAD *curr_dir, char *address){
-    //n„o permite remover a raiz: olhar metodo destruir
+    //n√£o permite remover a raiz: olhar metodo destruir
     if(!strcmp(getNome(curr_dir),address)){
         atualiza_data(curr_dir);
         destruir(curr_dir,1);
@@ -200,7 +200,24 @@ void rm(TAD *curr_dir, char *address){
 // mkdir
 void mkdir(TAD *curr_dir, char* name, int permissao)
 {
-	TAD *mesmo_nome = busca_filhos(curr_dir, name);
+
+    if (!strcmp(name, ".."))
+    {
+	printf("Nome invalido.\n");
+	return;
+    }
+    
+    int i = 0, n = strlen(name);
+    for (i = 0; i < n; i++)
+    {
+	if (name[i] == SEPARADOR)
+	{
+	    printf("Nome invalido.\n");
+	    return;
+	}
+    }
+    
+    TAD *mesmo_nome = busca_filhos(curr_dir, name);
     if(mesmo_nome){
         printf("Diretorio ja existente\n");
         return;
@@ -214,7 +231,17 @@ void mkdir(TAD *curr_dir, char* name, int permissao)
 void touch (TAD *curr_dir, char* name)
 //mesmo principio do mkdir
 {
-	TAD *mesmo_nome = busca_filhos(curr_dir, name);
+    int i = 0, n = strlen(name);
+    for (i = 0; i < n; i++)
+    {
+	if (name[i] == SEPARADOR)
+	{
+	    printf("Nome invalido.\n");
+	    return;
+	}
+    }
+	
+    TAD *mesmo_nome = busca_filhos(curr_dir, name);
     if(mesmo_nome){
         printf("Data atualizada\n");
         atualiza_data(curr_dir);
